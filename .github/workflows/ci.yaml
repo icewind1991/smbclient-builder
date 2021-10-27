@@ -1,0 +1,32 @@
+on: [push, pull_request]
+
+name: Build
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Build smbclient
+
+    strategy:
+      matrix:
+        pkgver:
+          - 4.15.0
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo apt-get build-dep smbclient
+      - name: Download sources
+        run: |
+          wget "https://download.samba.org/pub/samba/stable/samba-${{ matrix.pkgver }}.tar.gz"
+          tar xf samba-${{ matrix.pkgver }}.tar.gz
+      - name: Build smbclient
+        run: |
+          cd samba-${{ matrix.pkgver }}
+          ./buildtools/bin/waf configure --prefix= --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-json --without-ldap --without-libarchive --without-pam
+          ./buildtools/bin/waf build -j $(nproc --all) --targets client/smbclient
+      - name: Upload binaries to release
+        uses: actions/upload-artifact@v2
+        with:
+          path: samba-${{ matrix.pkgver }}/bin/default/source3/client/smbclient
+          name: smbclient-${{ matrix.pkgver }}
