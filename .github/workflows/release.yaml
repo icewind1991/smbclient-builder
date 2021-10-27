@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Build smbclient
+
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgver:
+          - 4.15.1
+          - 4.14.9
+          - 4.13.12
+          - 4.12.15
+          - 4.11.17
+          - 4.10.18
+          - 4.9.18
+          - 4.8.12
+          - 4.7.12
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo sed -Ei '/.*partner/! s/^# (deb-src .*)/\1/g' /etc/apt/sources.list
+          sudo apt update
+          sudo apt-get build-dep smbclient
+          sudo apt install python2.7-dev
+      - name: Download sources
+        run: |
+          wget "https://download.samba.org/pub/samba/stable/samba-${{ matrix.pkgver }}.tar.gz"
+          tar xf samba-${{ matrix.pkgver }}.tar.gz
+      - name: Switch to python 2.7
+        if: matrix.pkgver == '4.9.18' || matrix.pkgver == '4.8.12' || matrix.pkgver == '4.7.12'
+        run: |
+          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+      - name: Configure
+        if: matrix.pkgver == '4.8.12' || matrix.pkgver == '4.7.12'
+        run: |
+          cd samba-${{ matrix.pkgver }}
+          ./buildtools/bin/waf configure --prefix= --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-ldap --without-libarchive --without-pam
+      - name: Configure
+        if: matrix.pkgver != '4.8.12' && matrix.pkgver != '4.7.12'
+        run: |
+          cd samba-${{ matrix.pkgver }}
+          ./buildtools/bin/waf configure --prefix= --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-json --without-ldap --without-libarchive --without-pam
+      - name: Build
+        run: |
+          cd samba-${{ matrix.pkgver }}
+          ./buildtools/bin/waf build -j $(nproc --all) --targets client/smbclient
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: samba-${{ matrix.pkgver }}/bin/default/source3/client/smbclient
+          asset_name: smbclient-${{ matrix.pkgver }}
+          tag: ${{ github.ref }}
