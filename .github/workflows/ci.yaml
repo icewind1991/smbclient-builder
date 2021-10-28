@@ -37,15 +37,11 @@ jobs:
         run: |
           sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
       - name: Configure
-        if: matrix.pkgver == '4.8.12' || matrix.pkgver == '4.7.12'
         run: |
           cd samba-${{ matrix.pkgver }}
-          ./buildtools/bin/waf configure --prefix=/ --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-ldap --without-libarchive --without-pam
-      - name: Configure
-        if: matrix.pkgver != '4.8.12' && matrix.pkgver != '4.7.12'
-        run: |
-          cd samba-${{ matrix.pkgver }}
-          ./buildtools/bin/waf configure --prefix=/ --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-json --without-ldap --without-libarchive --without-pam
+          ./buildtools/bin/waf configure --prefix=/usr --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient \
+              --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-ldap --without-libarchive --without-pam \
+              --with-configdir=/etc/samba --sysconfdir=/etc/samba --localstatedir=/var --enable-fhs
       - name: Build
         run: |
           cd samba-${{ matrix.pkgver }}
