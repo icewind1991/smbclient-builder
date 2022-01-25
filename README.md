@@ -30,3 +30,8 @@ The following versions of `smbclient` are currently build
 - 4.9.18
 - 4.8.12
 - 4.7.12
+- 4.6.16
+- 4.5.16
+- 4.4.16
+- 4.3.13
+- 4.2.14
