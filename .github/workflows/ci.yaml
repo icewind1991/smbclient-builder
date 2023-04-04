@@ -36,7 +36,7 @@ jobs:
           sudo sed -Ei '/.*partner/! s/^# (deb-src .*)/\1/g' /etc/apt/sources.list
           sudo apt update
           sudo apt-get build-dep smbclient
-          sudo apt install python2.7-dev
+          sudo apt install python2.7-dev libjson-perl
       - name: Download sources
         run: |
           wget -q "https://download.samba.org/pub/samba/stable/samba-${{ matrix.pkgver }}.tar.gz"
@@ -53,13 +53,17 @@ jobs:
       - name: Configure
         run: |
           cd samba-${{ matrix.pkgver }}
-          ./buildtools/bin/waf configure --prefix=/usr --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient \
+          ./configure --prefix=/usr --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient \
               --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-ldap --without-libarchive --without-pam \
               --with-configdir=/etc/samba --sysconfdir=/etc/samba --localstatedir=/var --enable-fhs
       - name: Build
         run: |
           cd samba-${{ matrix.pkgver }}
-          ./buildtools/bin/waf build -j $(nproc --all) --targets client/smbclient
+          make -j $(nproc --all) bin/smbclient
+      - name: Smoke test
+        run: |
+          cd samba-${{ matrix.pkgver }}
+          ./bin/default/source3/client/smbclient --help
       - name: Upload binaries to release
         uses: actions/upload-artifact@v2
         with:
