@@ -22,7 +22,10 @@ Intended to easily install different `smbclient` versions in CI
 
 The following versions of `smbclient` are currently build
 
-- 4.15.1
+- 4.18.1
+- 4.17.7
+- 4.16.10
+- 4.15.13
 - 4.14.9
 - 4.13.12
 - 4.11.17
