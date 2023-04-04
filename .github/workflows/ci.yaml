@@ -1,4 +1,9 @@
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
 
 name: Build
 
@@ -30,7 +35,7 @@ jobs:
           - 4.2.14
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install build dependencies
         run: |
           sudo sed -Ei '/.*partner/! s/^# (deb-src .*)/\1/g' /etc/apt/sources.list
