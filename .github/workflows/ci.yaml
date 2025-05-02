@@ -63,7 +63,7 @@ jobs:
           cd samba-${{ matrix.pkgver }}
           ./configure --prefix=/usr --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient \
               --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-ldap --without-libarchive --without-pam \
-              --with-configdir=/etc/samba --sysconfdir=/etc/samba --localstatedir=/var --enable-fhs
+              --with-configdir=/etc/samba --sysconfdir=/etc/samba --localstatedir=/var --enable-fhs --without-ldb-lmd
       - name: Build
         run: |
           cd samba-${{ matrix.pkgver }}
