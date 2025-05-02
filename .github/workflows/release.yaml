@@ -6,13 +6,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     name: Build smbclient
 
     strategy:
       fail-fast: false
       matrix:
         pkgver:
+          - 4.21.4
+          - 4.20.4
+          - 4.19.5
           - 4.18.1
           - 4.17.7
           - 4.16.10
@@ -21,18 +24,9 @@ jobs:
           - 4.13.12
           - 4.12.15
           - 4.11.17
-          - 4.10.18
-          - 4.9.18
-          - 4.8.12
-          - 4.7.12
-          - 4.6.16
-          - 4.5.16
-          - 4.4.16
-          - 4.3.13
-          - 4.2.14
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install build dependencies
         run: |
           sudo sed -Ei '/.*partner/! s/^# (deb-src .*)/\1/g' /etc/apt/sources.list
@@ -57,7 +51,7 @@ jobs:
           cd samba-${{ matrix.pkgver }}
           ./configure --prefix=/usr --bundled-libraries=ALL --with-static-modules=ALL --nonshared-binary=client/smbclient \
               --without-ad-dc --without-gettext --with-winbind --without-ads --disable-cups --without-ldap --without-libarchive --without-pam \
-              --with-configdir=/etc/samba --sysconfdir=/etc/samba --localstatedir=/var --enable-fhs
+              --with-configdir=/etc/samba --sysconfdir=/etc/samba --localstatedir=/var --enable-fhs --without-ldb-lmd
       - name: Build
         run: |
           cd samba-${{ matrix.pkgver }}

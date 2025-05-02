@@ -1,6 +1,6 @@
 # smbclient-builder
 
-Mostly static `smbclient` builds for ubuntu 20.04.
+Mostly static `smbclient` builds for ubuntu 22.04.
 
 Intended to easily install different `smbclient` versions in CI
 
@@ -22,6 +22,9 @@ Intended to easily install different `smbclient` versions in CI
 
 The following versions of `smbclient` are currently build
 
+- 4.21.4
+- 4.20.4
+- 4.19.5
 - 4.18.1
 - 4.17.7
 - 4.16.10
@@ -29,12 +32,3 @@ The following versions of `smbclient` are currently build
 - 4.14.9
 - 4.13.12
 - 4.11.17
-- 4.10.18
-- 4.9.18
-- 4.8.12
-- 4.7.12
-- 4.6.16
-- 4.5.16
-- 4.4.16
-- 4.3.13
-- 4.2.14
