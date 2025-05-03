@@ -8,7 +8,7 @@ Intended to easily install different `smbclient` versions in CI
 
 - Download the smbclient binary from https://github.com/icewind1991/smbclient-builder/releases
 - Make the download file executable
-- Run `apt install libjansson4 libcap2 libbsd0 libreadline8 libicu66`
+- Run `apt install libjansson4 libcap2 libbsd0 libreadline8 libicu70`
 - Create a bare bones smb config in `/etc/samba/smb.conf`
   ```ini
   [global]
