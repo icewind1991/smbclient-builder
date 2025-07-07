@@ -1,3 +1,5 @@
+# Moved to https://codeberg.org/icewind/smbclient-builder
+
 # smbclient-builder
 
 Mostly static `smbclient` builds for ubuntu 22.04.
